@@ -139,3 +139,193 @@
 > 상수: 항상 같은 수, 변경할 수 없음
     > const con = " 변경 불가";
       con = ""; // 오류
+
+
+#### Weeek4: 조건문 ####
+
+조건문
+> if 조건문
+    > if(<불 표현식: true or false, 0 1만 들어가도 작동함>){    }       : 조건식이 true면 {}안의 코드 실행
+
+    > 현재 시간 구하기
+        let data = new Data() >> 생성자 함수(객체 생성)
+
+        >> data. 옆에 있는 것은 메소드
+        console.log(data.getFullYear());
+        console.log(data.getMonth());
+        ...
+    > 오전과 오후 구분(1)
+        if(data.getHours() < 12) {console.log("오전입니다.");}
+        
+        if(12<=data.getHours()) {console.log("오후 입니다.");}
+> if else 조건문
+    > if(<불 표현식>)   {}  else {}
+        >> ture면 if의 {}코드 실행, false면 else의 {} 코드 실행
+
+    > 오전과 오후 구분(2)
+        let date = new Date();
+
+        if(date.getHours() < 12) {console.log("오전입니다.");   }
+        else {console.log("오후입니다.");}
+> 중첩 조건문
+    > if (<불표현식){
+        if(<불표현식>){문장;} else {문장;}
+    } else{
+        문장;
+    }
+
+    > 식사시간 구분(1)
+    let date = new Date();
+    let hours = date.getHours();
+
+    if(hours<11){
+        console.log("아침 먹을 시간");
+    } else{
+        if(hours<15){
+            console.log("점심 먹을 시간");
+        } else {
+            console.log("저녁 먹을 시간");
+        }
+    }
+> if else-if 조건문: 중복되지 않은 세 가지 이상의 조건을 구분할 때 사용
+    > if(불) {} else if(불) {} else if(불) {} else {}
+
+    > 식사시간 구분(2)
+    let date = new Date();
+    let hours = date.getHours();
+
+    if(hours<11){
+        console.log("아침 먹을 시간입니다.");
+    } else if(hours<15){
+        console.log("점심 먹을 시간입니다.");
+    } else{
+        console.log("저녁 먹을 시간입니다.");
+    }
+> switch 조건문
+    > switch(<비교할 값>){
+        case <값> : 문장; break;
+        case <값> : 문장; break;
+        default: 문장; break;
+    }
+
+    > 홀짝 구분
+    let input = 32;
+
+    switch(input % 2){  //불이 아니라 비교 값!!
+        case 0: console.log("짝수입니다."); break;  //break가 없으면 그 다음 case까지 쭉함.
+        case 1: console.log("홀수입니다."); break;
+    }
+
+    > break 키워드를 사용하지 않은 조건문
+    let date = new Date();
+
+    switch(date.getMonth()+1){      //기본값이 0~으로 시작함.
+        case 12:
+        case 1:
+        case 2: console.log("겨울입니다."); break;
+        case 3:
+        case 4:
+        case 5: console.log("봄입니다."); break;
+        case 6:
+        case 7:
+        case 8: console.log("여름입니다."); break;
+        case 9:
+        case 10:
+        case 11: console.log("가을입니다."); break;
+        default: console.log("어떤 행성에 사는 거임...?"); break;
+    }
+> 삼항 연산자
+    > <불 표현식> ? <참> : <거짓>
+    > ex) console.log(number % 2 == 0 ? true : false);
+
+    > 값 비교하기(`연산자 사용)
+    let numA = 52;
+    let numB = 0;
+    let numC = -23;
+
+    console.log(`${numA}은/는 ${numA > 0 ? "0보다 큰" : "0 또는 0보다 작은"} 숫자입니다.');
+    console.log(`${numB}은/는 ${numB > 0 ? "0보다 큰" : "0 또는 0보다 작은"} 숫자입니다.');
+    console.log(`${numC}은/는 ${numC > 0 ? "0보다 큰" : "0 또는 0보다 작은"} 숫자입니다.');
+
+    > 삼항 연산자를 활용한 변수 초기화********
+        > 변수가 undefined일 때만 초기화
+        let test;
+
+        //해당 변수가 undefined(false 반환)인지 확인 후 초기화
+        test = test ? test : "초기화합니다_1";
+        console.log(test);
+
+        //해당 변수가 undefined인지 확인 후 초기화
+        test = test ? test : "초기화합니다_2";
+        console.log(test);
+
+        #결과: 초기화합니다_1   초기화합니다_1
+> 초기화 조건문
+    > let test;
+    if(!test) {     //undefined가 false를 반환하기 때문에 !(not)을 붙여줌
+        test = "초기화합니다_1";
+    }
+    console.log(test);
+
+    if(!test){
+        test = "초기화합니다_2";    //위에서 초기화 했음. 즉 실행 안함.
+    }
+    console.log(test);
+> 짧은 초기화 조건문
+    > A || B에서 A가 참이라면 A로 대치
+    > A || B에서 A가 거짓이라면 B로 대치
+
+    let test;
+
+    test = test || "초기화합니다_1"
+    console.log(test);
+
+    test = test || "초기화합니다_2"
+    console.log(test);
+
+    #결과: 초기화합니다_1   초기화합니다_1
+> 조금 더 나아가기
+    > 노드는 서버에서 사용는 것. 서버에 입력을 넣을 필요는 없음. but c나 c++의 scanf처럼 서버에 직접 입력을 넣을 수 있는 방법이 있나?
+    > 웹 브라우저에서 작동하는 자바스크립트: prompt() 이름의 함수를 받음
+    > Node.js에서 작동하는 자바스크립트: 단순한 코드로 입력을 받을 수 없음
+    > repl: 우리가 프롬포트에 node를 입력시 다음 줄에 >가 나오고 여기에 어떤 식을 넣으면 연산이 된다. 여기서 입력을 받는 것을 의미
+
+    > 기본적 입력
+    const repl = require('repl');   //repl을 갖고 옮.
+    
+    repl.start({
+        prompt: "<입력 때 앞에 출력할 문자열>",
+        eval: (command, context, filename, callback) => {
+            //입력(command)을 받았을 때 처리를 수행
+
+            //처리 완료
+            callback();
+        }
+    });
+
+    >> 입력 방법
+    //모듈 추출
+    const repl = require('repl');
+
+    //입력 시작
+    repl.start({
+        prompt: "숫자 입력> ",
+        eval: (command, context, filename, callback) =>{
+            //입력을 받았을 때 처리를 수행
+            let number = number(command);   //입력이 command로 들어옴.
+
+            //입력이 숫자인지 확인
+            if(isNaN(number)){
+                console.log("숫자가 아닙니다.");
+            } else {
+                console.log("숫자입니다.");
+            }
+
+            //처리완료
+            callback();
+        }
+    });
+    >> '숫자 입력> '이라고 입력한 글자가 나오면서 사용자의 입력을 기다림
+    >> 숫자를 입력하면 입력한 글자를 command 변수로 전달해 처리를 수행
+    >> callback() 함수를 호출 '현재 처리를 종료합니다.'를 알린 후
+    >> 종료하고 싶을 때는 Ctrl + C 를 연속해서 두 번 누름
