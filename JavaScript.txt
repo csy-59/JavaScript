@@ -801,3 +801,304 @@
      if(nullValue == null)
         console.log('null은 존재하지 않는 값입니다.');
         >> undefined는 존재하지 않는 값입니다.(\n)null은 존재하지 않는 값입니다.
+
+####
+<week7: 표준 내장 객체, 예외 처리, this 알아보기>
+#표준 내장 객체
+- 기본 자료형과 객체 자료형의 차이(모질라 싸이트 들어가보기)
+    > 통합 개발 환경(ID)에서 자동 완성 기능이 있어, 많은 자료형/객체를 쓸 수 있음
+    > 기본 자료형: 숫자, 문자열, 불
+        > typeof로 자료형 알 수 있음.
+        let number = 273; let string = "hello"; boolean = true; 등
+    > 객체 숫자, 문자열, 불
+        > 객체로 만들 수 있음
+        let number = new Number(273); let string new String("hello"); 등
+        but typeof로 출력시 모두 객체(object)로 출력됨.
+    > 기본 자료형의 속성 또는 메소드를 사용할 때는 기본 자료형이 자동으로 객체로 변환됨. (기본, 객체 자료형 모두 속성과 메소드를 사용할 수 있음)
+        > let string = "과자|1500원"; //typeof는 String 출력
+        > let string = new String("과자|1500원");   //typeof는 object 출력
+        >> console.log(string.split('|')); //['과자', '1500원']: 둘 다 이렇게 나옴(둘다 split 메소드 사용 가능)
+    > 차이점: 기본 자료형은 객체가 아님. 즉 속성과 메소드를 추가할 수 없음.
+        let primitiveNumber = 273;
+        primitiveNumber.method = function () {
+            return primitiveNumber;
+        };
+        console.log(primitiveNumber.method());  //오류. 메소드 추가 못함.
+    > 기본 자료형에 프로토타입으로 메소드 추가할 수 잇음
+        let primitiveNumber = 273;
+        Number.prototype.method = function () {     //primi~ 이 메소드를 사용 시 Number 객체로 변환됨. >> Number의 prototype에 메소드를 추가하면 사용 가능!
+            return 'primitiveNumber';
+        };
+        console.log(primitiveNumber.method());
+
+- Number 객체
+    > 자바스크립트에서 숫자를 표현할 때 사용
+    > 예제: Number 객체 생성
+        let numberFromLiteral = 273;    //기본자료형으로 생성
+        let numberFromConstructor = new Number(273);    //객체 자료형으로 생성
+    > 메소드(문자열로 리턴)
+        > toExponential(): 숫자를 지수 표시로 나타낸 문자열로 리턴
+        > toFixed(): 숫자를 고정소수점 표시로 나타낸 문자열을 리턴합니다.
+        > toPrecision(): 숫자를 길이에 따라 지수 표시 or 고정소수점 표시로 나타낸 문자열로 리턴
+    > 예제: Number의 메소드(toFixed(num)는 소수점 num 자릿수까지 자름)
+        let number = 273.5210332;
+        console.log(number.toFixed(1)); //273.5
+        console.log(number.toFixed(4)); //273.5210
+    > 예제: 생성자 함수 속성
+        function Constructor() {};  //생성자 함수 
+        Constructor.property = 273; //생성자 함수에 변수 추가!
+        Constructor.method = function () {};    //생성자 함수에 메소드 추가~!
+        console.log(Constructor.property);  //273
+        console.log(Constructor.method());  //[ Function ]
+
+        >> 생성자 함수의 속성
+        MAX_VALUE: 자바스크립트의 숫자가 나타낼 수 있는 최대 숫자
+        MIN_VALUE: 자바스크립트에서 숫자가 나타낼 수 있는 최소 숫자
+        NaN: 숫자로 타나낼 수 없는 숫자
+        POSITIVE_INFINITY: 양의 무한대 숫자
+        NEGATIVE_INFINITY: 음의 무한대 숫자
+    > 예제: 생성자 함수의 속성사용(MAX_VALUE)
+        let numberA = Number.MAX_VALUE;
+        let numberB = Number.MAX_VALUE + 1;
+        console.log(numberA);
+        console.log(numberB);
+        >> 1을 추가한 numberB와 numberA의 값이 같음.
+    > 예제: 생성자 함수의 속성 사용(NEGATIVE_INFINITY)
+        let addNumber = new Number('0.00000000000000001e+308'); //너무 큰 수는 부동소수점으로 사용!
+        let number = Numbe.MAX_VALUE + addNumber;
+        console.log(number);
+
+- String 객체
+    > 생성
+        let stringFromLiteral = "hello";
+        let stringFromConstructor = new String("hello");
+    > 속성과 메소드(String 객체의 메소드는 변경된 값을 리턴함)**
+        > length: 문자열의 길이를 나타냄.
+        > indexOf(searchString, position): 앞에서부터 일치하는 문자열의 위치를 리턴함.(없으면 -1 리턴)
+        > replace(regExp, replacement): regExp를 replacement로 바꾼 후 리턴
+        > slice(start, end): 특정 위치의 문자열을 추출해 리턴
+        > split(separator, limit):separator로 문자열을 잘라 배열 리턴
+        > toLowerCase(): 문자열을 소문자로 바꾸어 리턴
+        > toUpperCase(): 문자열을 대문자로 바꾸어 리턴
+    > 예제: 잘못된 String 객체 메소드 사용(비파괴적인 메소드인 toUpperCase())
+        let string = 'abcdefg';
+        string.toUpperCase();   //ABCDEFG
+        console.log(string);    //abcdefg로 출력! toUpperCase로 바꾼 배열을 저장해주지 않음!
+    > 예제: 올바른 String 객체 메소드 사용
+        let string = 'abcdefg';
+        string = string.toUpperCase();
+        console.log(string);    //ABCDEFG로 출력!
+    > 예제: 문자열 포함 여부(indexOf() 메소드로 문자열이 있는지 확인, 없으면 -1리턴)
+        let string "안녕하세요. 좋은 아침입니다.";
+        if(string.indexOf("아침") >= 0) {
+            console.log("좋은 아침이에요!");    //출력됨.
+        }
+    > 예제: 문자열 분해(split()도 비파괴적으로 사용 됨.)
+        let string = '감자, 고구마, 바나나, 사과';
+        let array = string.split(',');
+        console.log(array); 
+
+- Date 객체
+    > 객체 생성
+        new Date(): 현재 시간으로 Date() 객체 생성
+        new Date(<유닉스타임>): 1970.1.1, 0시 0분 0초에서 부터 경과한 밀리초로 Date객체 생성(많이 사용!)**
+        new Date(<시간 문자열>): 문자열로 Date 객체 생성
+        new Date(<년>, <월-1>, <일>, <시간>, <분>, <초>, <밀리초>): 시간 요소 기반으로 Dat 생성
+        >> 월은 0부터 시작.
+    > 예제: 객체 생성
+        //현재 시간 기반
+        let dateA = new Date();
+        console.log(dateA); //2021-04-16T01:13:39.108Z
+        //유닉스 타임
+        let dateB = new Date(692281800000);
+        console.log(dateB); //1991-12-09T12:30:00.000Z
+        //문자열 기반 Date 객체
+        let dateC = new Date("December 9, 1991 21:30:00");
+        console.log(dateC); //1991-12-09T12:30:00.000Z
+        //시간 요소 기반 Date 객체
+        let dateD = new Date(1991, 12-1, 9, 21, 30, 0,0);
+        console.log(dateD); //1991-12-09T12:30:00.000Z
+    > 메소드 활용(모질라 참고)
+        get~()/set~() 형태 메소드: ~에 FullYear, Month, Day, Hours, Minutes, Seconds를 사용하여 불러오거나 설정할 수 있음
+    > 예제: 시간 더하기(현재로 부터 1년 11개월 7일을 더한 날자 출력)
+        let date = new Date();
+        console.log(date);
+        date.setFullYear(date.getFullYear() +1);
+        date.setMonth(date.getMonth() + 11);
+        date.setDate(date.getDate() + 7);
+        console.log(date);
+    > 예제: 시간 간격 구하기(getTime() 메소드(유닉스 타임), 2개의 시간을 빼고 일단위로 나누어 시간 간격 구하기)
+        let now = new Date();
+        let before = new Date("May 9, 2001");
+        //시간간격 구하기
+        let interval = now.getTime() - before.getTime();
+        interval = Math.floor(interval/(1000*60*60*24));// 일단위로 나누기!
+        //출력
+        console.log(`태어나고 ${interval}일 지났습니다.`); //태어나고 7282일 지났습니다.
+
+- Array 객체
+    > 기본 메소드: 대부분 파괴적 메소드, 자기 자신을 변경
+        concat(): 변수로 입력한 배열 요소를 모두 합쳐 배열을 리턴
+        join(): 배열 안의 모든 요소를 문자열로 만들어 리턴
+        pop()*: 배열의 마지막 요소를 제거하고 리턴
+        push()*: 배열의 마지막 부분에 새로운 요소 추가
+        reverse()*: 배열의 요소 순서 뒤집기
+        slice(): 배열 요소의 지정한 부분 리턴
+        sort()*: 배열의 요소 정렬
+        splice()*: 배열의 요소의 지정한 부분을 삭제하고 삭제한 요소 리턴
+        >> *표시 되어 있는 것은 파괴적 메소드!!
+    > 예제: 메소드 연습(code7-21.js 파일 참고)
+    > 예제: 배열 정렬(code7-9.js 파일 참고, sort(): 오름차순(사전, 숫자 순))
+    > ECMAScript5에 추가된 메소드(모질라 레퍼런스 사이트 참고)
+        forEach(): 배열의 요소를 하나씩 뽑아 반복 돌림
+        map(): 콜백 함수에서 리턴하는 것을 기반으로 새로운 배열을 만듬(변수 지정!)
+        filter(): 콜백 함수에서 true를 리턴하는 것으로만 새로운 배열을 만들어 리턴(변수 지정)
+        > 예제: 추가된 메소드 사용하기(code7-24 참고)
+
+- 조금 더 나아가기
+    > 프로토타입에 메소드 추가
+        > 프로토타입에 메소드를 추가하면 해당 자료형 전체에 추가 가능
+        > 예제: String 생성자 함수의 prototype 속성에 contain() 메소드 추가
+         String.prototype.contain = function (input) {
+             //string에 input이 있는가?
+             return this.indexOf(input) >= 0;
+         };
+         //메소드 활용
+         console.log("안녕하세요".contain("안녕"));
+         console.log("안녕하세요".contain("데굴데굴"));
+    > underscore.js 라이브러리(정렬하기 좋음)
+        > 설치 해야함.(npm install underscore);
+        > html에서 사용시 <Script src="http://underscorejs.org/underscore.js"></Script>로 표시 해줘야함.
+        > 예제: underscore.js 라이브러리를 사용한 정렬(code7-25.js 참고)
+    > JSON 객체: 자바스크립트 객체를 사용한 데이터 표현 방법
+        > 기본 형태
+        [
+            {
+                "name": "고구마",   //키에 속성이 들어가 있는 형태
+                "price": 1000
+            },
+            {
+                "name": "감자",
+                "price": 500
+            },
+            {
+                "name": "바나나",
+                "price": 1500
+            }
+        ]
+        > 제약 사항
+            > 문자열은 큰따옴표로 만듬
+            > 모든 키는 큰따옴표로 감싸야함
+            > 숫자, 문자열, 불 자료형만 사용가능! (기본자료형)
+        > 메소드
+            JSON.stringify(<객체>, <변환 함수>, <공백 개수>): 자바스크립트 객체를 문자로 만들기
+            JSON.parse(<문자열>): 문자열을 자바스크립트 객체로 피싱함
+        > 예제: JSON 객체 활용하기(code7-26.js 확인)
+
+#예외처리
+- 예외와 기본 예외 처리
+    > 예외: 실행에 문제가 발생하면 자동 중단됨. 이렇게 발생한 오류(오류 속에 예외가 있다고 볼 수도 있음. 오류는 실행 전에 일어나는 오류. 예외는 실행 중에 일어나는 오류)
+        > 보통 사용자 UI에서 많이 발생함(예측하지 못한 행동(값 입력 등)을 했을 때 일어남)
+    > 예외 처리: 오류에 대처할 수 있게 하는 것
+    > 기본 예외 처리(TypeError)
+        > 예제: 예외 상황 확인, undefined 자료형을 일반적인 객체 혹은 함수처럼 다루면 TypeError 예외 발생
+        fucntion callThreeTimes(callback) { //매개변수로 변수가 들어와야하는데
+            for(let i = 0;i<3;i++){
+                callback();
+            }
+        }
+        //정상 실행
+        callThreeTimes(function() {console.log("안녕하세요");});
+        //예외 발생
+        callThreeTimes();   //매개변수로 아무것도 안들어옴(undefined) 예외 발생
+
+        > 예외 처리: 사전에 해당 데이터가 undefined인지 조건문으로 확인
+        function callThreeTimes(callback) {
+            if(callback){
+                for(let i = 0;i <10;i++){
+                    callback();
+                }
+            } else{
+                console.log("매개 변수 callback이 지정되지 않았습니다.");
+            }
+        }
+        //정상 실행
+        callThreeTimes(function() {console.log("안녕하세요");});
+        //예외 발생
+        callThreeTimes();   //if문에 걸리지 않고 else문으로 넘어가 오류 매시지 출력함
+
+- 고급 예외 처리
+    > try catch finally 구문
+        try{
+            //예외가 발생하면
+        } catch(exception){
+            //여기서 처리
+        } finally {
+            //여기는 무조건 처리
+        }
+    > 보통 try-catch, try-finally문으로 사용함.
+    > 예제: 배열을 생성할 때 길이를 음수로 지정하면 RangError 발생
+        const array = new Array(-200);  //오류 발생!
+    > 예제: 고급 예외 처리
+        try{
+            const array = new Array(-200);
+        } catch(exception) {    //예외 유형이 exception에 들어감.
+            console.log(`${exception.name} 예외가 발생했습니다.`);
+        } finally {
+            console.log("finally 구문이 실행되었습니다.");
+        }
+            >>RangError예외가 발생했습니다. (\n) finally 구문이 실행되었습니다.
+
+- 예외 객체
+    > 예외가 발생하면 어떤 예외가 발생했는지 정보를 전달함
+    > catch 구문의 괄호 안의 변수
+    > name 속성과 message 속성이 있음.
+        try{
+
+        }catch(exception){      //자바스크립트 플랫폼에서 자동으로 예외 객체를 exception에 줌
+
+        }
+    > 예외 객체: ReferenceError 후에 예외 객체의 name과 message가 출력됨.
+        try{//예외 발생
+            error.error.error();
+        } catch (e) {
+            console.log(e.name);
+            console.log(e.message);
+        }
+
+- 예외 객체 발생
+    > throw 키워드 사용: 강제로 예외 발생
+    > throw 키워드 뒤에는 문자열 또는 Error 객체를 입력
+        throw "강제 예외";
+    > 자세한 예외 출력은 Error 객체 사용: 사용시 몇 번째 줄에서 예외가 발생했는지 알 수 있음
+    > 예제: 객체를 사용한 예외 강제 발생
+        //Error 객체를 사용한 임의의 예외 객체 생성
+        const error = new Error("메시지");
+        error.name = "내 마음대로 오류";
+        error.message = "오류의 메시지";
+        //예외를 발생
+        throw error;
+    
+    > 예제: 간단한 예외 강제 발생 때의 예외 객체(문자열 사용하여 예외 발생)
+        try{
+            //예외를 강제로 발생시킴
+            throw "예외가 발생했습니다";
+        } catch(exception) {
+            //예외 객체를 출력합니다.
+            console.log("예외가 발생했습니다.");
+            console.log(exception);
+        }
+            >> 예외가 발생했습니다. \n 예외가 발생했습니다  : catch 구문에서 차례로 출력됨
+    
+    > 예제: Error 객체를 사용한 예외 강제 발생 때의 예외 객체
+        try{
+            const error = new Error("메시지");
+            error.name = "내 마음대로 오류";
+            error.message = "오류의 메시지";
+
+            throw error;
+        } cath(exception){
+            console.log(`${exception.name} 예외가 발생했습니다.`);
+            console.log(exception.message);
+        }
+>> 우선적으로 코딩을 잘 하고, 나중에 예외가 나올만한 상황에 try-catch문을 사용하는 것이 좋음
