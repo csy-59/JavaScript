@@ -1102,3 +1102,314 @@
             console.log(exception.message);
         }
 >> 우선적으로 코딩을 잘 하고, 나중에 예외가 나올만한 상황에 try-catch문을 사용하는 것이 좋음
+
+
+<week9: Node.js 기본>
+- 전역 변수
+    > 전역 변수/함수/객체: 모든 곳에서 사요할 수 있는 것들
+    > __filename: 현재 실행 중인 코드의 파일 경로를 나타냅니다.
+    > __dirname: 현재 실행 중인 코드의 폴더 경로를 나타냅니다.
+    > 예제: 9-1 __filename과 __dirname
+     console.log(__filename);
+     console.log(__dirname);
+
+- process 객체의 속성과 이벤트
+    > Node.js는 process 전역 객체를 제공
+    > 프로세스 정보를 제공, 제어할 수 있게 하는 객체
+    > process 객체의 속성
+        env: 컴퓨터 환경 정보 나타내기
+        version: Node.js의 버전
+        versions: Node.js와 종속된(관련) 프로그램 버전을 나타냅니다.
+        arch: 프로세서의 아키텍처를 나타냅니다.
+        platform: 플랫폼을 나타냄
+    > process 객체의 메소드
+        exit([exitCode=0]): 프로그램 종료**
+        memoryUsage(): 메모리 사용 정보 객체를 리턴합니다.
+        uptime(): 현재 프로그램이 실행된 시간을 리턴합니다.
+    > 예제 9-2: process 객체의 속성과 메소드
+     //정보
+     console.log('- process.arch: ", process.arch);
+     console.log('- process.platform: ", process.platform);
+     console.log('- process.connected: ", process.connected);
+     console.log('- process.execArgv: ", process.execArgv);
+     console.log('- process.exitCode: ", process.exitCode);
+     console.log('- process.mainModule: ", process.mainModule);
+     console.log('- process.release: ", process.release);
+     console.log('- process.memoryUsage(): ", process.memoryUsage());
+     console.log('- process.uptime(): ", process.uptime());
+
+     //종료
+     process.exit();
+
+     console.log('태스트');
+     console.log('태스트');
+     console.log('태스트');
+
+- process 객체와 이벤트 개요
+    > 이벤트: 무엇인가 플랫폼(Node.js)에서 발생하다
+    > Node.js의 이벤트 연결 메소드: 
+        on(<이벤트명>, <이벤트 핸들러>): 이벤트 연결. 이벤트가 발생하면 이벤트 핸들러를 실행
+    > process 객체의 이벤트
+        exit: 프로세스가 종료될 때 발생
+        uncaughtException: 예외가 일어날 때 발생합니다.
+    > 예제 9-3: process 객체의 이벤트
+     //process 객체에 exit 이벤트와 uncaughtException 이벤트를 연결
+     //이후 예외를강제로 발생 시켜 이벤트가 발생하는지확인
+     process.on('exit', () => {console.log("프로세스가 종료됨");});
+     process.on("uncaughtException", () => { console.log("예외 발생");});
+
+     //강제 예외 발생
+     error.error.error();
+    > 이벤트 매개 변수: 이벤트 핸들러의 매개 변수로 전달되는 매개 변수
+        process.on('exit', (code) => {console.log(`About to exit with code: ${code}`);});
+    > 예제 9-4: 이벤트 매개 변수
+     process.on('exit', (code)=>{
+         console.log("프로세스 종료됨");
+         console.log(`exit 이벤트 매개 변수: ${code}`); //0
+     });
+     process.on('uncaughtException',(error) => {
+         console.log("예외 발생");
+         console.log(`uncaughtException 이벤트 매개 변수: ${error}`);
+     });
+
+     error.error.error
+
+- os 모듈
+    > os 모듈 사용: const os = require('os');
+    > os 모듈 추출: const os = require('os');
+    > os 모듈의 메소드
+        hostname(): 운영체제의 호스트 이름 리턴
+        type(): 운영체제의 이름을 리턴
+        platform(): os의 플랫폼 리턴
+        arch(): os의 아키텍처 리턴
+        release(): os 버전 리턴
+        uptime(): os 실행된 시간 리턴
+        loadavg(): 로드 에버리지 정보를 담은 배열을 리턴합니다.
+        totalmem(): 시스템의 총 메모리를 리턴합니다.
+        freemen(): 시스템의 사용 가능한 메모리를 리턴
+        cpus(): cpu 정보를 담은 객체를 리턴
+        getNetworkInterfaces(): 네트워크 인터페이스의 정보를 담은 배열을 리턴
+    > 예제 9-5: os 모듈
+     const os = require('os');
+
+     console.log(os.hostname());
+     console.log(os.type());
+     console.log(os.platform());
+     console.log(os.arch());
+     console.log(os.release());
+     console.log(os.uptime());
+     console.log(os.loadavg());
+     console.log(os.totalmem());
+     console.log(os.freemen());
+     console.log(os.cpus());
+     console.log(os.networkInterfaces());
+- url 모듈
+    > url 모듈 추출
+        const url = require("url");
+    > url 모듈 메소드
+        parse(urlStr[.parseQueryString = false, slashesDenoteHost = false]): url 문자열을 url 객체로 변환해 리턴합니다.
+        format(urlObj): url 객체를 url 문자열로 변환해 리턴합니다.
+        resolve(from, to): 매개 변수를 조합해 완전한 url 문자열을 생성해 리턴
+    > 예제 9-6: url 모듈
+     const url = require('url');
+     //다음의 문자열을 객체로 변환해줌.
+     const parsedObject = url.parse("http://www.hanbit.co.kr/store/books/look.php?p_code=B4250257160");
+     console.log(parsedObject);
+
+- file System 모듈**
+    > fs 모듈 추출 방법
+        const fs = require("fs");
+    > 파일 읽기
+        실행할 자바 스트립트 파일이 있는 폴더에 textfile.txt 이름의 파일 생성.
+        read.js와 "this is a textfile.txt"이 입력된 textfile.txt 파일
+    > 파일 읽기 메소드
+        fs.readFileSync(<파일명>): 동기적으로 파일을 읽어 들입니다.
+        fs.readFile(<파일명>, <콜백 함수>): 비동기적으로 파일을 읽어 들입니다.
+        #동기적(순차적) 비동기적(비순차적)
+    > 예제 9-7: 동기적으로 파일 읽어 들이기/fs.readFileSync() 메소드 사용
+     cosnt fs = require('fs');
+     const file = fs.readFileSync('textfile.txt');
+     console.log(file); //이진수로 출력
+     console.loge(file.toString); //문자열로 나옴
+    > 예제 9-8: 비동기적으로 파일 읽어 들이기/fs.readFile() 메소드 사용
+     const fs = require('fs');
+
+     fs.readFile('textFile.txt', (error, file) => { //파일이 없으면 error이 대신 들어감.
+         console.log(file);
+         console.log(file.toString());
+     })
+    > 동기와 비동기의 실행 결과는 같지만 내부 실행 구조는 다름
+    > 동기적 파일을 읽어올 때 코드 순서
+        cosnt fs = require('fs');   //1번: 모듈 추출
+
+        const file = fs.readFileSync('textfile.txt');//2번
+        console.log(file); //3번
+        console.loge(file.toString); //4번
+        //5번: 종료
+        >> 파일 크기가 엄청 크다면 2에서 3으로 이동할 때 코드가 정지할 가능성 있음(시간이 너무 오래 걸려서)
+        >> 문제를 해결을 위해서 쓰레드 기능을 사용해야 함(Node.js는 싱글 쓰레드)
+        >> Node.js에는 쓰레드의 기본 이념이 들어 있음
+    > 비동기적으로 구성된 코드
+        const fs = require('fs');//1번: 모듈을 추출
+
+        //2번: 파일 읽기
+        fs.readFile('textFile.txt', (error, file) => { //파일이 없으면 error이 대신 들어감.
+             console.log(file);//4번
+             console.log(file.toString());//5번
+             //6번
+        })
+        //3번: 종료
+        >> 2에서 3으로 이동하는 시간이 0초에 가까움
+        >> 코드를 진행하고 Node.js의 뒷단에서 파일을 읽어 들이는 처리가 수행됨
+        >> 이러한 뒷단에서 처리가 모두 끝나면, 그때 콜백 함수 부분을 실행함(할 것을 플랫폼에 던짐)
+        >> 콜백 함수의 첫 번째 매개 변수는 오류객체이고 두 번째 매개 변수가 원하는 값임
+    > 비동기 처리의 장점
+        > 웹서버를 C++ 프로그래밍 언어로 만들어지면 빠르지만, 개발, 유지보수는 어려움
+        > 전 세계 웹 서비스 기업(페북, 트위터 등)도 C++로 웹 서버를 개발하지 않고 PHP, 자바 루비, 파이썬, Node.js 등 프로그래밍 언어로 개발
+        > 프로그래밍 언어 자체는 느리지만 큰 의미가 없다고 판단해 개발 속도와 유지 보수성이 좋은 프로그래밍 언어를 사용
+        > 자바 스크립트 프로그래밍 언어는 C++, 자바보다는 느리지만, Node.js를 사용하면 손쉽게 비동기 처리를 구현하여 빠른 처리 가능
+    > 여러 파일을 동기적으로 읽기 
+        const fs = require('fs');//1
+
+        const a = fs.readFileSync('a.txt');//2
+        const a = fs.readFileSync('b.txt');//3
+        const a = fs.readFileSync('c.txt');//4
+
+        console.log(a,b,c);//5
+        //6:종료
+    > 여러 파일을 비동기적으로 읽기
+        const fs = require('fs');//1
+        const async = require('async'); //2|비동기 + 병렬로 파일을 읽어 올 수 있도록 해줌
+
+        //3
+        async.parallel([
+            (callback) => {fs.readFile('a.txt', callback);},
+            (callback) => {fs.readFile('b.txt', callback);},
+            (callback) => {fs.readFile('c.txt', callback);},
+        ], (error, results) => {
+            //5
+            console.log(results);
+        });
+        //4
+    > 파일 쓰기
+        > 파일 쓰기 메소드
+            fs.writeFileSync(<파일명>, <문자열>): 동기적으로 파일을 씁니다.
+            fs.writeFile(<파일명>, <문자열>, <콜백 함수>): 비동기적으로 파일 쓰기
+        > 예제 9-9: 동기적으로 파일 쓰기|fs.writeFileSync()
+         cosnt fs = require('fs');
+
+         fs.writeFileSync('output.txt', '안녕하세요...!');
+         console.log("파일 쓰기를 완료");
+        > 예제 9-10: 비동기적으로 파일 쓰기|fs.writeFile()
+         const fs = require('fs');  //1
+
+         fs.writeFile('output.txt', '안녕하세요...!', (error) => {//2
+             console.log("파일 쓰기를 완료했습니다.");//4
+         });
+         //3
+    > 파일 처리와 예외 처리
+        > 동기 코드 예외처리: try-catch 구문
+        > 비동기 코드 예외처리: 콜백함수의 첫 번째 매개 변수 error를 활용
+        > 예제 9-11: 동기 코드 예외 처리|fs.readFileSync()
+         const fs = require('fs');
+
+         try {
+             const file = fs.readFileSync('none.txt');  //읽을 것이 없어서 에러
+             console.log(file);
+             console.log(file.toString());
+         } catch(exception) {
+             console.log("파일을 읽어 들이는데 문제가 발생했습니다.");
+             console.log(exception);
+         }
+        > 예제 9-12: 비동기 코드 예외 처리|fs.readFile()
+         const fs = require('fs');
+
+         fs.readFile('none.txt', (error, file) => { //none.txt가 없어서 error가 넘어감
+             //예외 처리
+             if(error) {
+                 //예외 시
+                 console.log("파일을 읽어 들이는데 문제가 발생했습니다.");
+                 console.log(error);
+             } else {
+                 console.log(file);
+                 console.log(file.toString());
+             }
+         });
+- 노드 패키지 매니저
+    > 과거의 프로그래밍 언어들은 외부 모듈 설치가 어려웠음
+    > 현재는 패키지 매니저 모듈 관리 프로그램을 사용해 모듈을 쉽게 설치하고 활용가능
+    > Node.js는 npm(Node.js Package Manager) 패키지 매니저를 사용
+    > npm을 사용한 외부 모듈 설치
+        > npm install <모듈명>
+        ex. npm install express
+    > 명령어 뒤에 @ 기호를 사용하면 원하는 버전 설치
+        > npm install <모듈명>@<버전>
+        ex. npm install express@4(@4.2 등)
+- request 모듈
+    > 웹 요청을 쉽게 만들어 주는 모듈로 외부 모듈임. (웹은 요청하고 사용자는 응답)
+        npm install request(이거 먼저 해야함!)
+    > 모듈 추출
+        const request = request('request');
+    > https://github.com/request/request
+    > 예제 9-13: request 모듈
+        >> 코드 실행 전에 npm install request 명령어 실행 모듈 설치
+        const request = require('require');
+
+        const url = 'http://www.hanbit.co.kr/store/books/new_book_list.html';
+        request(url, (error, response, body) => {
+            console.log(body);  //html 상의 body 가져옴
+        });
+        >> 코드 실행 시 웹 페이지의 소스 코드를 긁어옴(웹 크롤링)
+
+- cheerio 모듈
+    > request 모듈로 가져온 웹 페이지는 단순한 html 문자열
+    > 여기서 원하는 정보를 추출해야 단순한 '데이터'가 '정보'가 됨 >> 파싱
+    > cheerio 모듈: 가져온 웹 페이지의 특정 위치에서 손쉽게 데이터를 추출
+    > cheerio 모듈 설치
+        npm install cheerio
+    > cheerio 모듈 추출
+        const cheerio = require('cheerio');
+    > https://github.com/cheeriojs/cheerio
+    > 예제 9-14: cheerio 모듈(위에서 얻은 정보를 파싱해서 책 제목과 저자를 출력)
+        >> 저자가 여러 명일 때도 있음으로 쉼표로 분리하는 코드 작성
+        >> 실행하기 전 npm install cheerio 명령으로 설치
+
+- async 모듈
+    > async 모듈 설치: npm install async
+    > async 모듈 추출: const async = require('async');
+    > http://caolan.github/async/
+    > 비동기 방식의 문제점 1: 비동기 처리를 많이하면 콜백 지옥(콜백 함수를 여러개 들여쓰기 해 코드를 보기 힘든 상태를 의미)이 발생
+        > 예제: 복잡한 비동기 코드
+         const fs = require('fs');
+
+         fs.readFile('fileA.txt', (error, fileA) => {
+             fs.readFile('fileB.txt', (error, fileB) => {
+                 fs.readFile('fileC.txt', (error, fileC) => {
+                     console.log(fileA);
+                     console.log(fileB);
+                     console.log(fileC);
+                 })
+             })
+         })
+        >> parallel() 메소드로 병렬 처리를 쉽게 할 수 있게 함(예제는 ppt 참고)
+    > parallel() 메소드: 콜백 지옥 해결
+        const fs = require('fs');//1
+        const async = require('async');//2
+
+        async.parallel({//3
+            //fileA,B,C가 동시 실행되고, 이중 가장 나중에 실행되는 것 다음에 마지막 함수를 실행
+            fileA: (callback) => {
+                fs.readFile('fileA.txt', callback);
+            },
+            fileB: (callback) => {
+                fs.readFile('fileB.txt', callback);
+            }, 
+            fileC: (callback) => {
+                fs.readFile('fileC.txt', callback);
+            }
+        }, (error, results) => {
+            console.log(results.fileA);//5
+            console.log(results.fileB);//6
+            console.lof(results.fileC);//7
+        });
+        //4
